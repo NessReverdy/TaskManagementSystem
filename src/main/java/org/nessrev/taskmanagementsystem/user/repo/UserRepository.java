@@ -11,4 +11,6 @@ import java.util.List;
 public interface UserRepository extends JpaRepository<User, Long> {
     @Query("SELECT user FROM User user WHERE user.admin = true")
     List<User> findAllAdmins();
+
+    boolean existsByUsername(String username);
 }
