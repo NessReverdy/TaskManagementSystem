@@ -1,5 +1,6 @@
 package org.nessrev.taskmanagementsystem.user.controller;
 
+import org.nessrev.taskmanagementsystem.user.dto.UserFullInfo;
 import org.nessrev.taskmanagementsystem.user.dto.UserRequest;
 import org.nessrev.taskmanagementsystem.user.dto.UserResponse;
 import org.nessrev.taskmanagementsystem.user.service.UserService;
@@ -17,17 +18,17 @@ public class UserControllerImpl implements UserController {
     }
 
     @Override
-    public ResponseEntity<UserResponse> createUser(UserRequest userRequest) {
+    public ResponseEntity<UserFullInfo> createUser(UserRequest userRequest) {
         return ResponseEntity.ok(userService.createUser(userRequest));
     }
 
     @Override
-    public ResponseEntity<UserResponse> getUserById(Long id) {
+    public ResponseEntity<UserFullInfo> getUserById(Long id) {
         return ResponseEntity.ok(userService.getUserById(id));
     }
 
     @Override
-    public ResponseEntity<List<UserResponse>> getAllUsers() {
+    public ResponseEntity<List<UserFullInfo>> getAllUsers() {
         return ResponseEntity.ok(userService.getAllUsers());
     }
 
@@ -43,7 +44,7 @@ public class UserControllerImpl implements UserController {
     }
 
     @Override
-    public ResponseEntity<UserResponse> updateUserPassword(Long id, String newPassword) {
+    public ResponseEntity<UserFullInfo> updateUserPassword(Long id, String newPassword) {
         return ResponseEntity.ok(userService.changePassword(id, newPassword));
     }
 

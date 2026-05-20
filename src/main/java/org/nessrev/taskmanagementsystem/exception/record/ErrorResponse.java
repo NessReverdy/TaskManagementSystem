@@ -1,3 +1,10 @@
 package org.nessrev.taskmanagementsystem.exception.record;
 
-public record ErrorResponse(String message) {}
+import java.time.LocalDateTime;
+import java.util.List;
+
+public record ErrorResponse(
+        String message,
+        List<FieldError> errors,
+        LocalDateTime timestamp
+) {}

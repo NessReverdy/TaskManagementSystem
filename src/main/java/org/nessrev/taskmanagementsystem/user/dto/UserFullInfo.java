@@ -7,7 +7,8 @@ import lombok.Setter;
 
 @Getter
 @Setter
-public class UserRequest {
+public class UserFullInfo {
+    private Long id;
     @NotBlank
     @Size(min = 2, max = 50)
     private String username;
@@ -17,7 +18,8 @@ public class UserRequest {
     private String password;
     private boolean admin;
 
-    public UserRequest(String username, String password, boolean admin) {
+    public UserFullInfo(Long id, String username, String password, boolean admin) {
+        this.id = id;
         this.username = username;
         this.password = password;
         this.admin = admin;

@@ -1,12 +1,16 @@
 package org.nessrev.taskmanagementsystem.user.dto;
 
+import jakarta.validation.constraints.NotBlank;
+import jakarta.validation.constraints.Size;
 import lombok.Getter;
 import lombok.Setter;
 
 @Getter
 @Setter
 public class UserResponse {
-    private long id;
+    private Long id;
+    @NotBlank
+    @Size(min = 2, max = 50)
     private String username;
     private boolean admin;
 

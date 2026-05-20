@@ -1,5 +1,6 @@
 package org.nessrev.taskmanagementsystem.user.mapper;
 
+import org.nessrev.taskmanagementsystem.user.dto.UserFullInfo;
 import org.nessrev.taskmanagementsystem.user.dto.UserRequest;
 import org.nessrev.taskmanagementsystem.user.dto.UserResponse;
 import org.nessrev.taskmanagementsystem.user.entity.User;
@@ -27,5 +28,14 @@ public class UserMapper {
         user.setUsername(userRequest.getUsername());
         user.setPassword(userRequest.getPassword());
         user.setAdmin(userRequest.isAdmin());
+    }
+
+    public UserFullInfo toFullInfo(User user) {
+        return new UserFullInfo(
+                user.getId(),
+                user.getUsername(),
+                user.getPassword(),
+                user.isAdmin()
+        );
     }
 }
