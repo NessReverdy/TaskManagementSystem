@@ -4,7 +4,6 @@ import jakarta.validation.Valid;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotNull;
 import jakarta.validation.constraints.Size;
-import org.nessrev.taskmanagementsystem.user.dto.UserFullInfo;
 import org.nessrev.taskmanagementsystem.user.dto.UserRequest;
 import org.nessrev.taskmanagementsystem.user.dto.UserResponse;
 import org.springframework.http.ResponseEntity;
@@ -16,17 +15,14 @@ import java.util.List;
 @Validated
 @RequestMapping("/users")
 public interface UserController {
-     @PostMapping
-     ResponseEntity<UserFullInfo> createUser(@RequestBody @Valid UserRequest userRequest);
-
      @GetMapping("/{id}")
-     ResponseEntity<UserFullInfo> getUserById(
+     ResponseEntity<UserResponse> getUserById(
              @PathVariable
              @NotNull
              Long id);
 
      @GetMapping
-     ResponseEntity<List<UserFullInfo>> getAllUsers();
+     ResponseEntity<List<UserResponse>> getAllUsers();
 
      @DeleteMapping("/{id}")
      ResponseEntity<Void> deleteUserById(@PathVariable Long id);
@@ -43,7 +39,7 @@ public interface UserController {
      );
 
      @PatchMapping("/{id}/password")
-     ResponseEntity<UserFullInfo> updateUserPassword(
+     ResponseEntity<UserResponse> updateUserPassword(
              @PathVariable
              @NotNull
              Long id,

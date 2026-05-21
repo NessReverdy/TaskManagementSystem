@@ -3,10 +3,10 @@ package org.nessrev.taskmanagementsystem.user.service;
 import lombok.AllArgsConstructor;
 import org.nessrev.taskmanagementsystem.exception.UserAlreadyExistsException;
 import org.nessrev.taskmanagementsystem.exception.UserNotFoundException;
-import org.nessrev.taskmanagementsystem.user.dto.UserFullInfo;
 import org.nessrev.taskmanagementsystem.user.dto.UserRequest;
 import org.nessrev.taskmanagementsystem.user.dto.UserResponse;
 import org.nessrev.taskmanagementsystem.user.entity.User;
+import org.nessrev.taskmanagementsystem.user.enums.Role;
 import org.nessrev.taskmanagementsystem.user.mapper.UserMapper;
 import org.nessrev.taskmanagementsystem.user.repo.UserRepository;
 import org.slf4j.Logger;
@@ -25,16 +25,16 @@ public class UserService {
     private static final Logger log = LoggerFactory.getLogger(UserService.class);
 
     @Transactional
-    public UserFullInfo createUser(UserRequest request) {
+    public UserResponse createUser(UserRequest request) {
         if (userRepository.existsByUsername(request.getUsername())) {
-            log.info("User is already exist");
+            log.warn("User is already exist");
             throw new UserAlreadyExistsException(request.getUsername());
         }
         User user = userMapper.toEntity(request);
         userRepository.save(user);
 
         log.info("User created with id {}", user.getId());
-        return userMapper.toFullInfo(user);
+        return userMapper.toResponse(user);
     }
 
     public UserResponse changeName(Long id, String newName) {
@@ -44,7 +44,7 @@ public class UserService {
         }
 
         if (userRepository.existsByUsername(newName)) {
-            log.info("User with this name already exists");
+            log.warn("User with this name already exists");
             throw new UserAlreadyExistsException(newName);
         }
 
@@ -52,40 +52,41 @@ public class UserService {
         return userMapper.toResponse(userRepository.save(user));
     }
 
-    public UserFullInfo changePassword(Long id, String newPassword) {
+    public UserResponse changePassword(Long id, String newPassword) {
         User user = getUserEntityById(id);
         user.setPassword(newPassword);
-        return userMapper.toFullInfo(userRepository.save(user));
+        return userMapper.toResponse(userRepository.save(user));
     }
 
-    public UserFullInfo getUserById(Long id) {
+    public UserResponse getUserById(Long id) {
         User user = getUserEntityById(id);
-        return userMapper.toFullInfo(user);
+        return userMapper.toResponse(user);
     }
 
-    public List<UserFullInfo> getAllUsers() {
+    public List<UserResponse> getAllUsers() {
         return userRepository.findAll()
                 .stream()
-                .map(userMapper::toFullInfo)
+                .map(userMapper::toResponse)
                 .toList();
     }
 
     @Transactional
     public void deleteUserById(Long id) {
         userRepository.delete(getUserEntityById(id));
+        log.info("User with id {} deleted", id);
     }
 
     public UserResponse changeAdminRole(Long id) {
         User user = getUserEntityById(id);
 
-        if (user.isAdmin()) {
-            user.setAdmin(false);
+        if (user.getRole() == Role.ADMIN) {
+            user.setRole(Role.USER);
             userRepository.save(user);
             log.info("User {} isn't admin now", user.getId());
             return userMapper.toResponse(user);
         }
 
-        user.setAdmin(true);
+        user.setRole(Role.ADMIN);
         userRepository.save(user);
 
         log.info("User {} promoted to admin", user.getId());
@@ -93,7 +94,7 @@ public class UserService {
     }
 
     public List<UserResponse> getAllAdmins(){
-        return userRepository.findAllAdmins()
+        return userRepository.findByRole(Role.ADMIN)
                 .stream()
                 .map(userMapper::toResponse)
                 .toList();

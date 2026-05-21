@@ -4,6 +4,7 @@ import jakarta.persistence.*;
 import jakarta.validation.constraints.NotBlank;
 import lombok.Getter;
 import lombok.Setter;
+import org.nessrev.taskmanagementsystem.user.enums.Role;
 
 @Entity
 @Table(name = "users")
@@ -19,9 +20,10 @@ public class User {
     private String username;
 
     @NotBlank
-    @Column(length = 8)
+    @Column(nullable = false)
     private String password;
 
-    @Column
-    private boolean admin = false;
+    @Enumerated(EnumType.STRING)
+    @Column(nullable = false)
+    private Role role;
 }

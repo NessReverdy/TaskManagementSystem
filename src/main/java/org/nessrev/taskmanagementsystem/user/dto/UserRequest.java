@@ -4,6 +4,7 @@ import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.Size;
 import lombok.Getter;
 import lombok.Setter;
+import org.nessrev.taskmanagementsystem.user.enums.Role;
 
 @Getter
 @Setter
@@ -15,11 +16,11 @@ public class UserRequest {
     @NotBlank
     @Size(min = 4, max = 8)
     private String password;
-    private boolean admin;
+    private Role role;
 
-    public UserRequest(String username, String password, boolean admin) {
+    public UserRequest(String username, String password, Role role) {
         this.username = username;
         this.password = password;
-        this.admin = admin;
+        this.role = role;
     }
 }
