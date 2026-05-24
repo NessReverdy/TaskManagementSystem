@@ -1,0 +1,3 @@
+spring.application.name=TaskManagementSystem
+spring.jpa.hibernate.ddl-auto=update
+jwt.secret=yourSuperKeyForJwtTokenUseCarefully
