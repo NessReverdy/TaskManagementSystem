@@ -1,5 +1,6 @@
 package org.nessrev.taskmanagementsystem.configuration;
 
+import org.nessrev.taskmanagementsystem.jwt.filter.JwtFilter;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
@@ -14,6 +15,11 @@ import org.springframework.security.web.SecurityFilterChain;
 @Configuration
 @EnableWebSecurity
 public class SecurityConfig {
+    private final JwtFilter jwtFilter;
+
+    public SecurityConfig(JwtFilter jwtFilter) {
+        this.jwtFilter = jwtFilter;
+    }
 
     @Bean
     public PasswordEncoder passwordEncoder() {
@@ -30,11 +36,11 @@ public class SecurityConfig {
                 .authorizeHttpRequests(auth -> auth
 
                         .requestMatchers(
-                                "/auth/register",
-                                "auth/login"
-                        ).permitAll()
+                                "/auth/**"
+                                ).permitAll()
                         .anyRequest().authenticated()
                 )
+                .addFilterBefore(jwtFilter, org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter.class)
                 .build();
     }
 }

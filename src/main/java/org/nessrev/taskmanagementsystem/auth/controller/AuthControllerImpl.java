@@ -2,6 +2,7 @@ package org.nessrev.taskmanagementsystem.auth.controller;
 
 import org.nessrev.taskmanagementsystem.auth.dto.AuthResponse;
 import org.nessrev.taskmanagementsystem.auth.dto.LoginRequest;
+import org.nessrev.taskmanagementsystem.auth.dto.RefreshRequest;
 import org.nessrev.taskmanagementsystem.auth.dto.RegisterRequest;
 import org.nessrev.taskmanagementsystem.auth.service.AuthService;
 import org.springframework.http.ResponseEntity;
@@ -23,5 +24,10 @@ public class AuthControllerImpl implements AuthController {
     @Override
     public ResponseEntity<AuthResponse> login(LoginRequest loginRequest) {
         return ResponseEntity.ok(authService.login(loginRequest));
+    }
+
+    @Override
+    public ResponseEntity<AuthResponse> refresh(RefreshRequest refreshRequest) {
+        return ResponseEntity.ok(authService.refresh(refreshRequest));
     }
 }

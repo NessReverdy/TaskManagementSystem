@@ -1,8 +1,8 @@
 package org.nessrev.taskmanagementsystem.user.service;
 
 import lombok.AllArgsConstructor;
-import org.nessrev.taskmanagementsystem.exception.UserAlreadyExistsException;
-import org.nessrev.taskmanagementsystem.exception.UserNotFoundException;
+import org.nessrev.taskmanagementsystem.exception.custom.UserAlreadyExistsException;
+import org.nessrev.taskmanagementsystem.exception.custom.UserNotFoundException;
 import org.nessrev.taskmanagementsystem.user.dto.UserRequest;
 import org.nessrev.taskmanagementsystem.user.dto.UserResponse;
 import org.nessrev.taskmanagementsystem.user.entity.User;

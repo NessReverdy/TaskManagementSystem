@@ -1,4 +1,4 @@
-package org.nessrev.taskmanagementsystem.exception;
+package org.nessrev.taskmanagementsystem.exception.custom;
 
 public class UserAlreadyExistsException extends RuntimeException {
     public UserAlreadyExistsException(String username) {

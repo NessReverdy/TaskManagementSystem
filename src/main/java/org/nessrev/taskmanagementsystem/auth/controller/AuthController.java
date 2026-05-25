@@ -3,6 +3,7 @@ package org.nessrev.taskmanagementsystem.auth.controller;
 import jakarta.validation.Valid;
 import org.nessrev.taskmanagementsystem.auth.dto.AuthResponse;
 import org.nessrev.taskmanagementsystem.auth.dto.LoginRequest;
+import org.nessrev.taskmanagementsystem.auth.dto.RefreshRequest;
 import org.nessrev.taskmanagementsystem.auth.dto.RegisterRequest;
 import org.springframework.http.ResponseEntity;
 import org.springframework.validation.annotation.Validated;
@@ -24,5 +25,12 @@ public interface AuthController {
             @Valid
             @RequestBody
             LoginRequest loginRequest
+    );
+
+    @PostMapping("/refresh")
+    ResponseEntity<AuthResponse> refresh(
+            @Valid
+            @RequestBody
+            RefreshRequest refreshRequest
     );
 }

@@ -1,12 +1,13 @@
-package org.nessrev.taskmanagementsystem.auth.jwt;
+package org.nessrev.taskmanagementsystem.jwt.filter;
 
 import jakarta.servlet.FilterChain;
 import jakarta.servlet.ServletException;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import lombok.AllArgsConstructor;
-import org.nessrev.taskmanagementsystem.auth.jwt.user.entity.UserSecurity;
-import org.nessrev.taskmanagementsystem.auth.jwt.user.service.UserSecurityService;
+import org.nessrev.taskmanagementsystem.jwt.service.JwtService;
+import org.nessrev.taskmanagementsystem.jwt.userSecurity.entity.UserSecurity;
+import org.nessrev.taskmanagementsystem.jwt.userSecurity.service.UserSecurityService;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.web.authentication.WebAuthenticationDetailsSource;
@@ -27,41 +28,38 @@ public class JwtFilter extends OncePerRequestFilter {
             HttpServletResponse response,
             FilterChain filterChain
     ) throws ServletException, IOException {
-        final String authHeader = request.getHeader("Authorization");
 
-        final String jwt;
-        final String username;
+        final String authHeader = request.getHeader("Authorization");
 
         if (authHeader == null || !authHeader.startsWith("Bearer ")) {
             filterChain.doFilter(request, response);
             return;
         }
 
-        jwt = authHeader.substring(7);
-        username = jwtService.extractUsername(jwt);
+        final String jwt = authHeader.substring(7);
+        final String username = jwtService.extractUsername(jwt);
 
-        if(username != null && SecurityContextHolder.getContext().getAuthentication() == null) {
+        if (username != null && SecurityContextHolder.getContext().getAuthentication() == null) {
+
             UserSecurity user = userSecurityService.loadUserByUsername(username);
 
-            if (jwtService.isTokenValid(jwt, user)){
+            if (jwtService.isTokenValid(jwt, user)) {
+
                 UsernamePasswordAuthenticationToken authToken =
                         new UsernamePasswordAuthenticationToken(
                                 user,
                                 null,
                                 user.getAuthorities()
                         );
+
                 authToken.setDetails(
-                        new WebAuthenticationDetailsSource()
-                                .buildDetails(request)
+                        new WebAuthenticationDetailsSource().buildDetails(request)
                 );
 
-                SecurityContextHolder
-                        .getContext()
-                        .setAuthentication(authToken);
-
-                filterChain.doFilter(request, response);
+                SecurityContextHolder.getContext().setAuthentication(authToken);
             }
         }
 
+        filterChain.doFilter(request, response);
     }
 }

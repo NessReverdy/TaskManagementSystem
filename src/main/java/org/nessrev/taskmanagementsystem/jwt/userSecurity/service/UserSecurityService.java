@@ -1,10 +1,9 @@
-package org.nessrev.taskmanagementsystem.auth.jwt.user.service;
+package org.nessrev.taskmanagementsystem.jwt.userSecurity.service;
 
 import lombok.RequiredArgsConstructor;
-import org.nessrev.taskmanagementsystem.auth.jwt.user.entity.UserSecurity;
+import org.nessrev.taskmanagementsystem.jwt.userSecurity.entity.UserSecurity;
 import org.nessrev.taskmanagementsystem.user.entity.User;
 import org.nessrev.taskmanagementsystem.user.repo.UserRepository;
-import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.stereotype.Service;

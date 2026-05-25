@@ -1,10 +1,8 @@
 package org.nessrev.taskmanagementsystem.user.controller;
 
-import jakarta.validation.Valid;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotNull;
 import jakarta.validation.constraints.Size;
-import org.nessrev.taskmanagementsystem.user.dto.UserRequest;
 import org.nessrev.taskmanagementsystem.user.dto.UserResponse;
 import org.springframework.http.ResponseEntity;
 import org.springframework.validation.annotation.Validated;

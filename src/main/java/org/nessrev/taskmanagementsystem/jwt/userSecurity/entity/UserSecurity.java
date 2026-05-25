@@ -1,4 +1,4 @@
-package org.nessrev.taskmanagementsystem.auth.jwt.user.entity;
+package org.nessrev.taskmanagementsystem.jwt.userSecurity.entity;
 
 import org.nessrev.taskmanagementsystem.user.entity.User;
 import org.springframework.security.core.GrantedAuthority;

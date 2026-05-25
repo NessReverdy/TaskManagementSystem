@@ -1,4 +1,4 @@
-package org.nessrev.taskmanagementsystem.exception;
+package org.nessrev.taskmanagementsystem.exception.custom;
 
 public class UserNotFoundException extends RuntimeException {
     public UserNotFoundException(Long id) {

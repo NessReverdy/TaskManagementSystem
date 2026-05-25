@@ -1,13 +1,10 @@
 package org.nessrev.taskmanagementsystem.auth.dto;
 
-import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.Setter;
 
 @Getter
 @Setter
-@AllArgsConstructor
-public class AuthResponse {
-    private String accessToken;
+public class RefreshRequest {
     private String refreshToken;
 }
