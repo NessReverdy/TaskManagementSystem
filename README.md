@@ -142,7 +142,9 @@ Response: 204 No Content
 PATCH /users/{id}/username
 ```
 Request body:
+
 Key: newUsername
+
 Value: user2
 
 Response:
@@ -159,7 +161,9 @@ Response:
 PATCH /users/{id}/password
 ```
 Request body:
+
 Key: newPassword
+
 Value: 12345678
 
 Response:
