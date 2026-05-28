@@ -142,10 +142,9 @@ Response: 204 No Content
 PATCH /users/{id}/username
 ```
 Request body:
-```json
 Key: newUsername
 Value: user2
-```
+
 Response:
 ```json
 {
@@ -160,10 +159,9 @@ Response:
 PATCH /users/{id}/password
 ```
 Request body:
-```json
 Key: newPassword
 Value: 12345678
-```
+
 Response:
 ```json
 {
