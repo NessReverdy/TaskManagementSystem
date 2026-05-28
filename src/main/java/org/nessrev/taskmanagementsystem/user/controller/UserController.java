@@ -3,12 +3,14 @@ package org.nessrev.taskmanagementsystem.user.controller;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotNull;
 import jakarta.validation.constraints.Size;
+import org.nessrev.taskmanagementsystem.projects.entity.Project;
 import org.nessrev.taskmanagementsystem.user.dto.UserResponse;
 import org.springframework.http.ResponseEntity;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
+import java.util.Set;
 
 @Validated
 @RequestMapping("/users")
@@ -50,4 +52,7 @@ public interface UserController {
 
      @GetMapping("/admins")
      ResponseEntity<List<UserResponse>> getAllAdmins();
+
+     @GetMapping("/{username}/projects")
+     ResponseEntity<Set<Project>> getAllProjectsByUsername(@PathVariable String username);
 }

@@ -3,7 +3,7 @@ package org.nessrev.taskmanagementsystem.user.service;
 import lombok.AllArgsConstructor;
 import org.nessrev.taskmanagementsystem.exception.custom.UserAlreadyExistsException;
 import org.nessrev.taskmanagementsystem.exception.custom.UserNotFoundException;
-import org.nessrev.taskmanagementsystem.user.dto.UserRequest;
+import org.nessrev.taskmanagementsystem.projects.entity.Project;
 import org.nessrev.taskmanagementsystem.user.dto.UserResponse;
 import org.nessrev.taskmanagementsystem.user.entity.User;
 import org.nessrev.taskmanagementsystem.user.enums.Role;
@@ -15,6 +15,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
+import java.util.Set;
 
 @Service
 @AllArgsConstructor
@@ -25,18 +26,6 @@ public class UserService {
     private static final Logger log = LoggerFactory.getLogger(UserService.class);
 
     @Transactional
-    public UserResponse createUser(UserRequest request) {
-        if (userRepository.existsByUsername(request.getUsername())) {
-            log.warn("User is already exist");
-            throw new UserAlreadyExistsException(request.getUsername());
-        }
-        User user = userMapper.toEntity(request);
-        userRepository.save(user);
-
-        log.info("User created with id {}", user.getId());
-        return userMapper.toResponse(user);
-    }
-
     public UserResponse changeName(Long id, String newName) {
         User user = getUserEntityById(id);
         if (user.getUsername().equals(newName)) {
@@ -52,6 +41,7 @@ public class UserService {
         return userMapper.toResponse(userRepository.save(user));
     }
 
+    @Transactional
     public UserResponse changePassword(Long id, String newPassword) {
         User user = getUserEntityById(id);
         user.setPassword(newPassword);
@@ -76,6 +66,7 @@ public class UserService {
         log.info("User with id {} deleted", id);
     }
 
+    @Transactional
     public UserResponse changeAdminRole(Long id) {
         User user = getUserEntityById(id);
 
@@ -103,5 +94,13 @@ public class UserService {
     private User getUserEntityById(Long id) {
         return userRepository.findById(id)
                 .orElseThrow(() -> new UserNotFoundException(id));
+    }
+
+    @Transactional(readOnly = true)
+    public Set<Project> getUserProjectsByUsername(String username) {
+        User user = userRepository.findByUsername(username)
+                .orElseThrow(() -> new UserNotFoundException(username));
+
+        return user.getProjects();
     }
 }

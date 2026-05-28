@@ -5,8 +5,11 @@ import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.Size;
 import lombok.Getter;
 import lombok.Setter;
+import org.nessrev.taskmanagementsystem.projects.enums.ProjectStatus;
+import org.nessrev.taskmanagementsystem.user.entity.User;
 
-import java.util.List;
+import java.util.HashSet;
+import java.util.Set;
 
 @Entity
 @Table(name = "projects")
@@ -18,7 +21,7 @@ public class Project {
     private Long id;
 
     @NotBlank
-    @Column(nullable = false, length = 100)
+    @Column(nullable = false, length = 100, unique = true)
     private String name;
 
     @Lob
@@ -26,6 +29,15 @@ public class Project {
     @Size(max = 1000, message = "Description can't be longer than 1000 characters")
     private String description;
 
-    private List<String> author;
+    @ManyToMany
+    @JoinTable(
+            name = "project_authors",
+            joinColumns = @JoinColumn(name = "project_id"),
+            inverseJoinColumns = @JoinColumn(name = "user_id")
+    )
+    private Set<User> authors = new HashSet<>();
+
+    @Enumerated(EnumType.STRING)
+    private ProjectStatus status;
 
 }

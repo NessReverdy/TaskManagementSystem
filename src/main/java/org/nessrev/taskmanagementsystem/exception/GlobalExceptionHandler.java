@@ -110,4 +110,15 @@ public class GlobalExceptionHandler {
                 ));
     }
 
+    @ExceptionHandler(ProjectNotFoundException.class)
+    public ResponseEntity<ErrorResponse> handleProjectNotFound(ProjectNotFoundException ex) {
+        return ResponseEntity
+                .status(HttpStatus.CONFLICT)
+                .body(new ErrorResponse(
+                        ex.getMessage(),
+                        List.of(),
+                        LocalDateTime.now()
+                ));
+    }
+
 }

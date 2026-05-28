@@ -1,5 +1,6 @@
 package org.nessrev.taskmanagementsystem.user.controller;
 
+import org.nessrev.taskmanagementsystem.projects.entity.Project;
 import org.nessrev.taskmanagementsystem.user.dto.UserRequest;
 import org.nessrev.taskmanagementsystem.user.dto.UserResponse;
 import org.nessrev.taskmanagementsystem.user.service.UserService;
@@ -7,6 +8,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.RestController;
 
 import java.util.List;
+import java.util.Set;
 
 @RestController
 public class UserControllerImpl implements UserController {
@@ -50,5 +52,10 @@ public class UserControllerImpl implements UserController {
     @Override
     public ResponseEntity<List<UserResponse>> getAllAdmins() {
         return ResponseEntity.ok(userService.getAllAdmins());
+    }
+
+    @Override
+    public ResponseEntity<Set<Project>> getAllProjectsByUsername(String username) {
+        return ResponseEntity.ok(userService.getUserProjectsByUsername(username));
     }
 }
