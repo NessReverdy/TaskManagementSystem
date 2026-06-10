@@ -8,11 +8,10 @@ import java.util.List;
 
 public interface UserService {
   UserResponse createUser(UserRequest userRequest);
-  UserResponse updateUsername(Long id, String newName);
-  UserResponse updatePassword(Long id, String newPassword);
+  UserResponse updateUser(Long id, UserRequest request);
   UserResponse getUserById(Long id);
   List<UserResponse> getAllUsers();
   void deleteUserById(Long id);
   UserResponse changeRole(Long id, Role role);
-  List<UserResponse> getAllAdmins();
+  List<UserResponse> getAllUsersByRole(Role role);
 }

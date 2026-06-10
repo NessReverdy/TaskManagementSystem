@@ -35,25 +35,15 @@ public class SecurityConfig {
         session.sessionCreationPolicy(SessionCreationPolicy.STATELESS)
       )
       .authorizeHttpRequests(auth -> auth
-
-        //todo поправь эндпоинты это пример
         .requestMatchers(
-          "/actuator/**"
-        ).permitAll()
-
-        .requestMatchers(
-          "/users/me/**",
-          "/users/search/**",
-          "/users/filter/**"
+          "/users/**"
         ).hasAnyRole("USER", "ADMIN")
 
         .requestMatchers(
-          "/users/admin/**",
-          "/users/all/**",
-          "/users/delete/**"
+          "/users/admin/**"
         ).hasRole("ADMIN")
 
-        .anyRequest().authenticated()
+          .anyRequest().authenticated()
       )
       .addFilterBefore(jwtFilter, UsernamePasswordAuthenticationFilter.class)
       .build();

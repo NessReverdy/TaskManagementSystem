@@ -12,6 +12,7 @@ import org.nessrev.userservice.repo.UserRepository;
 import org.nessrev.userservice.service.UserService;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -33,8 +34,10 @@ public class UserServiceImpl implements UserService {
       log.warn("User is already exist");
       throw new UserAlreadyExistsException(request.getUsername());
     }
+
     String encodedPassword = passwordEncoder.encode(request.getPassword());
-    User user = userMapper.toEntity(request, encodedPassword);
+    User user = userMapper.toEntity(request);
+    user.setPassword(encodedPassword);
     userRepository.save(user);
 
     log.info("User created with id {}", user.getId());
@@ -42,26 +45,18 @@ public class UserServiceImpl implements UserService {
   }
 
   @Override
+  @PreAuthorize("hasRole('ADMIN') or #id == authentication.principal.id")
   @Transactional
-  public UserResponse updateUsername(Long id, String newUsername) {
-    User user = getUserEntityById(id);
-    if (user.getUsername().equals(newUsername)) {
-      return userMapper.toResponse(user);
-    }
-    if (userRepository.existsByUsername(newUsername)) {
-      log.warn("User with this name already exists");
-      throw new UserAlreadyExistsException(newUsername);
+  public UserResponse updateUser(Long id, UserRequest request) {
+    User user = userRepository.findById(id)
+      .orElseThrow(() -> new UserNotFoundException(id));
+
+    userMapper.updateUserFromDto(request, user);
+
+    if (request.getPassword() != null) {
+      user.setPassword(passwordEncoder.encode(request.getPassword()));
     }
 
-    user.setUsername(newUsername);
-    return userMapper.toResponse(userRepository.save(user));
-  }
-
-  @Override
-  @Transactional
-  public UserResponse updatePassword(Long id, String newPassword) {
-    User user = getUserEntityById(id);
-    user.setPassword(passwordEncoder.encode(newPassword));
     return userMapper.toResponse(userRepository.save(user));
   }
 
@@ -80,6 +75,7 @@ public class UserServiceImpl implements UserService {
   }
 
   @Override
+  @PreAuthorize("hasRole('ADMIN') or #id == authentication.principal.id")
   @Transactional
   public void deleteUserById(Long id) {
     userRepository.delete(getUserEntityById(id));
@@ -87,27 +83,22 @@ public class UserServiceImpl implements UserService {
   }
 
   @Override
+  @PreAuthorize("hasRole('ADMIN')")
   @Transactional
-  public UserResponse changeRole(Long id, Role role) { //todo переписать
+  public UserResponse changeRole(Long id, Role role) {
     User user = getUserEntityById(id);
 
-    if (user.getRole() == Role.ADMIN) {
-      user.setRole(Role.USER);
-      userRepository.save(user);
-      log.info("User {} isn't admin now", user.getId());
-      return userMapper.toResponse(user);
-    }
-
-    user.setRole(Role.ADMIN);
+    user.setRole(role);
     userRepository.save(user);
 
-    log.info("User {} promoted to admin", user.getId());
+    log.info("User {} role changed to {}", user.getId(), role);
+
     return userMapper.toResponse(user);
   }
 
   @Override
-  public List<UserResponse> getAllAdmins() {
-    return userRepository.findByRole(Role.ADMIN)
+  public List<UserResponse> getAllUsersByRole(Role role) {
+    return userRepository.findAllByRole(role)
       .stream()
       .map(userMapper::toResponse)
       .toList();

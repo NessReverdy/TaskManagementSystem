@@ -1,26 +1,20 @@
 package org.nessrev.userservice.mapper;
 
+import org.mapstruct.Mapper;
+import org.mapstruct.MappingTarget;
+import org.mapstruct.NullValuePropertyMappingStrategy;
+import org.mapstruct.ReportingPolicy;
 import org.nessrev.userservice.dto.UserRequest;
 import org.nessrev.userservice.dto.UserResponse;
 import org.nessrev.userservice.entity.User;
-import org.springframework.stereotype.Component;
 
-@Component
-public class UserMapper {
-
-  public UserResponse toResponse(User user) {
-    return new UserResponse(
-      user.getId(),
-      user.getUsername(),
-      user.getRole()
-    );
-  }
-
-  public User toEntity(UserRequest userRequest, String encodedPassword) {
-    User user = new User();
-    user.setUsername(userRequest.getUsername());
-    user.setPassword(encodedPassword);
-    user.setRole(userRequest.getRole());
-    return user;
-  }
+@Mapper(
+  componentModel = "spring",
+  nullValuePropertyMappingStrategy = NullValuePropertyMappingStrategy.IGNORE,
+  unmappedTargetPolicy = ReportingPolicy.IGNORE
+)
+public interface UserMapper {
+  UserResponse toResponse(User user);
+  User toEntity(UserRequest request);
+  void updateUserFromDto(UserRequest request, @MappingTarget User user);
 }

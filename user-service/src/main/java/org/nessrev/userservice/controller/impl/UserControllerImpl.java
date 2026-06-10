@@ -2,6 +2,7 @@ package org.nessrev.userservice.controller.impl;
 
 import org.nessrev.userservice.controller.UserController;
 import org.nessrev.userservice.dto.*;
+import org.nessrev.userservice.enums.Role;
 import org.nessrev.userservice.service.UserService;
 import org.nessrev.userservice.service.impl.UserServiceImpl;
 import org.springframework.http.ResponseEntity;
@@ -38,18 +39,10 @@ public class UserControllerImpl implements UserController {
     return ResponseEntity.noContent().build();
   }
 
-  //todo юзер может менять только свои данные, админ любые
   @Override
-  public ResponseEntity<UserResponse> updateUsername(Long id, UpdateUsernameRequest request) {
+  public ResponseEntity<UserResponse> updateUser(Long id, UserRequest request) {
     return ResponseEntity.ok(
-      userService.updateUsername(id, request.getUsername())
-    );
-  }
-
-  @Override
-  public ResponseEntity<UserResponse> updateUserPassword(Long id, UpdatePasswordRequest request) {
-    return ResponseEntity.ok(
-      userService.updatePassword(id, request.getPassword())
+      userService.updateUser(id, request)
     );
   }
 
@@ -61,7 +54,7 @@ public class UserControllerImpl implements UserController {
   }
 
   @Override
-  public ResponseEntity<List<UserResponse>> getAllAdmins() {
-    return ResponseEntity.ok(userService.getAllAdmins());
+  public ResponseEntity<List<UserResponse>> getAllUsersByRole(Role role) {
+    return ResponseEntity.ok(userService.getAllUsersByRole(role));
   }
 }

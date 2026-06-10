@@ -1,6 +1,9 @@
 package org.nessrev.userservice.controller;
 
-import org.nessrev.userservice.dto.*;
+import org.nessrev.userservice.dto.ChangeRoleRequest;
+import org.nessrev.userservice.dto.UserRequest;
+import org.nessrev.userservice.dto.UserResponse;
+import org.nessrev.userservice.enums.Role;
 import org.springframework.http.ResponseEntity;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
@@ -22,16 +25,11 @@ public interface UserController {
   @DeleteMapping("/admin/{id}")
   ResponseEntity<Void> deleteUserById(@PathVariable Long id);
 
-  @PatchMapping("/{id}/username")
-  ResponseEntity<UserResponse> updateUsername(
+  @PatchMapping("/{id}/update")
+  ResponseEntity<UserResponse> updateUser(
     @PathVariable Long id,
-    @RequestBody UpdateUsernameRequest request
+    @RequestBody UserRequest request
   );
-
-  @PatchMapping("/{id}/password")
-  ResponseEntity<UserResponse> updateUserPassword(
-    @PathVariable Long id,
-    @RequestBody UpdatePasswordRequest request);
 
   @PatchMapping("/admin/{id}/role")
   ResponseEntity<UserResponse> changeRole(
@@ -39,6 +37,8 @@ public interface UserController {
     @RequestBody ChangeRoleRequest request
   );
 
-  @GetMapping("/admin/admins")
-  ResponseEntity<List<UserResponse>> getAllAdmins();
+  @GetMapping("/all")
+  ResponseEntity<List<UserResponse>> getAllUsersByRole(
+    @RequestBody Role role
+  );
 }
