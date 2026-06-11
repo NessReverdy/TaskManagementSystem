@@ -8,7 +8,7 @@
 ![Gradle](https://img.shields.io/badge/Build-Gradle-darkgreen)
 ![Docker](https://img.shields.io/badge/Container-Docker-blue)
 
-Task Management System — a REST API application for managing tasks and projects.
+Task Management System — a microservices REST API application for managing tasks and projects.
 
 The project is being developed using Spring Boot and provides:
 
@@ -28,6 +28,7 @@ The project is being developed using Spring Boot and provides:
 - Docker
 - JWT Authentication
 - Gradle
+- Redis
 
 ## Current Functionality
 
@@ -63,7 +64,8 @@ Request body:
 ```json
 {
   "username": "alice",
-  "password": "12345678"
+  "password": "12345678",
+  "role": "USER"
 }
 ```
 
@@ -125,6 +127,32 @@ Response:
 
 ## User (Requires access token)
 
+### Create user
+```http
+POST /users
+```
+
+Request:
+
+```http
+{
+    "id": 2,
+    "username": "user9",
+    "password":"1234",
+    "role": "USER"
+}
+```
+
+Responce:
+
+```http
+{
+    "id": 2,
+    "username": "user9",
+    "role": "USER"
+}
+```
+
 ### Get user by ID
 
 ```http
@@ -164,25 +192,29 @@ Response:
 ]
 ```
 
-### Delete user by ID
+### Delete user by ID (only for admins or users who change their data)
 
 ```http
-DELETE /users/{id}
+DELETE /users/admin/{id}
 ```
 
 Response: 204 No Content
 
-### Update username
+### Update user (only for admins or users who change their data)
 
 ```http
-PATCH /users/{id}/username
+PATCH /users/{id}/update
 ```
 
 Request body:
 
-Key: newUsername
-
-Value: user2
+```json
+{
+  "username": "alice",
+  "password": "12345678",
+  "role": "USER"
+}
+```
 
 Response:
 
@@ -194,48 +226,44 @@ Response:
 }
 ```
 
-### Update password
+### Change user role (only for admin)
 
 ```http
-PATCH /users/{id}/password
+PATCH /users/admin/{id}/role
 ```
 
-Request body:
-
-Key: newPassword
-
-Value: 12345678
-
-Response:
+Request:
 
 ```json
 {
-    "id": 1,
-    "username": "user2",
-    "role": "USER"
+  "role": "USER"
 }
-```
-
-### Grant administrator privileges to a user
-
-```http
-PATCH /users/{id}/admin
 ```
 
 Response:
 
 ```json
-{
-    "id": 1,
-    "username": "user2",
-    "role": "ADMIN"
-}
+[
+    {
+        "id": 1,
+        "username": "user2",
+        "role": "USER"
+    }
+]
 ```
 
-### Get all admins
+### Get all users by role
 
 ```http
-GET /users/admins
+GET /users/all
+```
+
+Request:
+
+```json
+{
+  "role": "USER"
+}
 ```
 
 Response:
