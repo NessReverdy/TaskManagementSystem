@@ -30,12 +30,12 @@ public class UserServiceImpl implements UserService {
   @Override
   @Transactional
   public UserResponse createUser(UserRequest request) {
-    if (userRepository.existsByUsername(request.getUsername())) {
+    if (userRepository.existsByUsername(request.username())) {
       log.warn("User is already exist");
-      throw new UserAlreadyExistsException(request.getUsername());
+      throw new UserAlreadyExistsException(request.username());
     }
 
-    String encodedPassword = passwordEncoder.encode(request.getPassword());
+    String encodedPassword = passwordEncoder.encode(request.password());
     User user = userMapper.toEntity(request);
     user.setPassword(encodedPassword);
     userRepository.save(user);
@@ -53,8 +53,8 @@ public class UserServiceImpl implements UserService {
 
     userMapper.updateUserFromDto(request, user);
 
-    if (request.getPassword() != null) {
-      user.setPassword(passwordEncoder.encode(request.getPassword()));
+    if (request.password() != null) {
+      user.setPassword(passwordEncoder.encode(request.password()));
     }
 
     return userMapper.toResponse(userRepository.save(user));
