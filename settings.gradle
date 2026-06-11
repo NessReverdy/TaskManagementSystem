@@ -10,3 +10,4 @@ pluginManagement {
 }
 rootProject.name = 'TaskManagementSystem'
 include 'user-service'
+include "auth-service"
