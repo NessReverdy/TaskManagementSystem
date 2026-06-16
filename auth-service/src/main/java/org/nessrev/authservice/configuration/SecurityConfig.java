@@ -1,6 +1,6 @@
-package org.nessrev.userservice.configuration;
+package org.nessrev.authservice.configuration;
 
-import org.nessrev.userservice.jwt.filter.JwtFilter;
+import org.nessrev.authservice.jwt.filter.JwtFilter;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
@@ -35,14 +35,8 @@ public class SecurityConfig {
       )
       .authorizeHttpRequests(auth -> auth
         .requestMatchers(
-          "/users/**"
-        ).hasAnyRole("USER", "ADMIN")
-
-        .requestMatchers(
-          "/users/admin/**"
-        ).hasRole("ADMIN")
-
-          .anyRequest().authenticated()
+          "/auth/**"
+        ).permitAll()
       )
       .addFilterBefore(jwtFilter, UsernamePasswordAuthenticationFilter.class)
       .build();

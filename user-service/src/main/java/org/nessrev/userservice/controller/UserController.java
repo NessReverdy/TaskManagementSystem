@@ -1,5 +1,6 @@
 package org.nessrev.userservice.controller;
 
+import jakarta.validation.Valid;
 import org.nessrev.userservice.dto.ChangeRoleRequest;
 import org.nessrev.userservice.dto.UserRequest;
 import org.nessrev.userservice.dto.UserResponse;
@@ -14,7 +15,11 @@ import java.util.List;
 @RequestMapping("/users")
 public interface UserController {
   @PostMapping
-  ResponseEntity<UserResponse> createUser(@RequestBody UserRequest request);
+  ResponseEntity<UserResponse> createUser(
+    @RequestBody
+    @Valid
+    UserRequest request
+  );
 
   @GetMapping("/{id}")
   ResponseEntity<UserResponse> getUserById(@PathVariable Long id);
@@ -28,13 +33,17 @@ public interface UserController {
   @PatchMapping("/{id}/update")
   ResponseEntity<UserResponse> updateUser(
     @PathVariable Long id,
-    @RequestBody UserRequest request
+    @RequestBody
+    @Valid
+    UserRequest request
   );
 
   @PatchMapping("/admin/{id}/role")
   ResponseEntity<UserResponse> changeRole(
     @PathVariable Long id,
-    @RequestBody ChangeRoleRequest request
+    @RequestBody
+    @Valid
+    ChangeRoleRequest request
   );
 
   @GetMapping("/all")

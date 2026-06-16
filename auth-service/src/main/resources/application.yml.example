@@ -1,0 +1,18 @@
+server:
+  port: 8008
+
+spring:
+  datasource:
+    url: jdbc:postgresql://localhost:5432/task_db
+    username: your_username
+    password: your_password
+    driver-class-name: org.postgresql.Driver
+
+  jpa:
+    hibernate:
+      ddl-auto: none
+    show-sql: true
+
+  liquibase:
+    enabled: true
+    change-log: classpath:db/changelog/db.changelog-master.xml
