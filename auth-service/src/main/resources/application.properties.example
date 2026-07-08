@@ -1,3 +1,2 @@
 spring.application.name=auth-service
-spring.jpa.hibernate.ddl-auto=update
 jwt.secret=very_secret_key_change_me_please_123

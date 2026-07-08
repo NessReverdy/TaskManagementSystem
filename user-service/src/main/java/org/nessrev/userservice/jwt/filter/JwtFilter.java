@@ -9,7 +9,6 @@ import org.nessrev.userservice.jwt.service.JwtService;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.context.SecurityContextHolder;
-import org.springframework.security.web.authentication.WebAuthenticationDetailsSource;
 import org.springframework.stereotype.Component;
 import org.springframework.web.filter.OncePerRequestFilter;
 
@@ -38,8 +37,8 @@ public class JwtFilter extends OncePerRequestFilter {
 
     String token = authHeader.substring(7);
 
-    if (jwtService.isTokenValid(token)) {
-
+    if (jwtService.isTokenValid(token)
+      && SecurityContextHolder.getContext().getAuthentication() == null) {
       String username = jwtService.extractUsername(token);
       String role = jwtService.extractRole(token);
 
@@ -50,11 +49,8 @@ public class JwtFilter extends OncePerRequestFilter {
           List.of(new SimpleGrantedAuthority("ROLE_" + role))
         );
 
-      authentication.setDetails(
-        new WebAuthenticationDetailsSource().buildDetails(request)
-      );
-
-      SecurityContextHolder.getContext().setAuthentication(authentication);
+      SecurityContextHolder.getContext()
+        .setAuthentication(authentication);
     }
 
     filterChain.doFilter(request, response);

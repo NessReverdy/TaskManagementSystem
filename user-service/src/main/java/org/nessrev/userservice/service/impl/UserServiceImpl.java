@@ -1,6 +1,7 @@
 package org.nessrev.userservice.service.impl;
 
 import lombok.AllArgsConstructor;
+import org.nessrev.userservice.dto.UserCreatedEvent;
 import org.nessrev.userservice.dto.UserRequest;
 import org.nessrev.userservice.dto.UserResponse;
 import org.nessrev.userservice.entity.User;
@@ -29,19 +30,17 @@ public class UserServiceImpl implements UserService {
 
   @Override
   @Transactional
-  public UserResponse createUser(UserRequest request) {
-    if (userRepository.existsByUsername(request.username())) {
+  public void createUser(UserCreatedEvent userCreatedEvent) {
+    if (userRepository.existsByUsername(userCreatedEvent.username())) {
       log.warn("User is already exist");
-      throw new UserAlreadyExistsException(request.username());
+      throw new UserAlreadyExistsException(userCreatedEvent.username());
     }
 
-    String encodedPassword = passwordEncoder.encode(request.password());
-    User user = userMapper.toEntity(request);
-    user.setPassword(encodedPassword);
+    User user = userMapper.toEntity(userCreatedEvent);
     userRepository.save(user);
 
     log.info("User created with id {}", user.getId());
-    return userMapper.toResponse(user);
+    userMapper.toResponse(user);
   }
 
   @Override
@@ -52,10 +51,6 @@ public class UserServiceImpl implements UserService {
       .orElseThrow(() -> new UserNotFoundException(id));
 
     userMapper.updateUserFromDto(request, user);
-
-    if (request.password() != null) {
-      user.setPassword(passwordEncoder.encode(request.password()));
-    }
 
     return userMapper.toResponse(userRepository.save(user));
   }

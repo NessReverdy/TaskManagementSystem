@@ -3,7 +3,7 @@ package org.nessrev.authservice.jwt.service.jwt.impl;
 import io.jsonwebtoken.Claims;
 import io.jsonwebtoken.Jwts;
 import io.jsonwebtoken.security.Keys;
-import org.nessrev.authservice.entity.AuthUser;
+import org.nessrev.authservice.auth.entity.AuthUser;
 import org.nessrev.authservice.jwt.service.jwt.JwtService;
 import org.nessrev.authservice.jwt.userSecurity.entity.UserSecurity;
 import org.springframework.beans.factory.annotation.Value;

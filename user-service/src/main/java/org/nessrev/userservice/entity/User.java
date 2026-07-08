@@ -12,16 +12,11 @@ import org.nessrev.userservice.enums.Role;
 @Setter
 public class User {
   @Id
-  @GeneratedValue(strategy = GenerationType.IDENTITY)
   private Long id;
 
   @NotBlank
   @Column(unique = true, nullable = false, length = 50)
   private String username;
-
-  @NotBlank
-  @Column(nullable = false)
-  private String password;
 
   @Enumerated(EnumType.STRING)
   @Column(nullable = false)

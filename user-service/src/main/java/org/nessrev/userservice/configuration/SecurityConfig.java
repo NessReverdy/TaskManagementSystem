@@ -7,6 +7,8 @@ import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
 import org.springframework.security.config.annotation.web.configurers.AbstractHttpConfigurer;
 import org.springframework.security.config.http.SessionCreationPolicy;
+import org.springframework.security.core.userdetails.UserDetailsService;
+import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.web.SecurityFilterChain;
@@ -27,22 +29,26 @@ public class SecurityConfig {
   }
 
   @Bean
+  public UserDetailsService userDetailsService() {
+    return username -> {
+      throw new UsernameNotFoundException("JWT authentication is used");
+    };
+  }
+
+  @Bean
   public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
     return http
       .csrf(AbstractHttpConfigurer::disable)
+      .httpBasic(AbstractHttpConfigurer::disable)
+      .formLogin(AbstractHttpConfigurer::disable)
+      .logout(AbstractHttpConfigurer::disable)
       .sessionManagement(session ->
         session.sessionCreationPolicy(SessionCreationPolicy.STATELESS)
       )
       .authorizeHttpRequests(auth -> auth
-        .requestMatchers(
-          "/users/**"
-        ).hasAnyRole("USER", "ADMIN")
-
-        .requestMatchers(
-          "/users/admin/**"
-        ).hasRole("ADMIN")
-
-          .anyRequest().authenticated()
+        .requestMatchers("/users/admin/**").hasRole("ADMIN")
+        .requestMatchers("/users/**").hasAnyRole("USER", "ADMIN")
+        .anyRequest().authenticated()
       )
       .addFilterBefore(jwtFilter, UsernamePasswordAuthenticationFilter.class)
       .build();

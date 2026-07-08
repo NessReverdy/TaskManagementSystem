@@ -1,7 +1,7 @@
 package org.nessrev.authservice.jwt.service.jwt;
 
 import io.jsonwebtoken.Claims;
-import org.nessrev.authservice.entity.AuthUser;
+import org.nessrev.authservice.auth.entity.AuthUser;
 import org.nessrev.authservice.jwt.userSecurity.entity.UserSecurity;
 
 public interface JwtService {

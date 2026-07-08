@@ -14,13 +14,6 @@ import java.util.List;
 @Validated
 @RequestMapping("/users")
 public interface UserController {
-  @PostMapping
-  ResponseEntity<UserResponse> createUser(
-    @RequestBody
-    @Valid
-    UserRequest request
-  );
-
   @GetMapping("/{id}")
   ResponseEntity<UserResponse> getUserById(@PathVariable Long id);
 

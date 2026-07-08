@@ -19,11 +19,6 @@ public class UserControllerImpl implements UserController {
   }
 
   @Override
-  public ResponseEntity<UserResponse> createUser(UserRequest request) {
-    return ResponseEntity.ok(userService.createUser(request));
-  }
-
-  @Override
   public ResponseEntity<UserResponse> getUserById(Long id) {
     return ResponseEntity.ok(userService.getUserById(id));
   }
@@ -49,7 +44,7 @@ public class UserControllerImpl implements UserController {
   @Override
   public ResponseEntity<UserResponse> changeRole(Long id, ChangeRoleRequest request) {
     return ResponseEntity.ok(
-      userService.changeRole(id, request.getRole())
+      userService.changeRole(id, request.role())
     );
   }
 

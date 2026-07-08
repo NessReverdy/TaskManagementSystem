@@ -1,9 +1,12 @@
-package org.nessrev.authservice.service.impl;
+package org.nessrev.authservice.auth.service.impl;
 
+import com.fasterxml.jackson.core.JsonProcessingException;
+import com.fasterxml.jackson.databind.ObjectMapper;
 import lombok.AllArgsConstructor;
-import org.nessrev.authservice.client.UserServiceClient;
+import org.nessrev.authservice.auth.entity.AuthUser;
+import org.nessrev.authservice.auth.service.AuthService;
 import org.nessrev.authservice.dto.*;
-import org.nessrev.authservice.entity.AuthUser;
+import org.nessrev.authservice.enums.OutboxEventType;
 import org.nessrev.authservice.exception.custom.InvalidRefreshTokenException;
 import org.nessrev.authservice.exception.custom.UserAlreadyExistsException;
 import org.nessrev.authservice.exception.custom.UserNotFoundException;
@@ -11,12 +14,16 @@ import org.nessrev.authservice.exception.custom.WrongPasswordException;
 import org.nessrev.authservice.jwt.service.jwt.JwtService;
 import org.nessrev.authservice.jwt.service.refresh.RefreshTokenService;
 import org.nessrev.authservice.jwt.userSecurity.entity.UserSecurity;
-import org.nessrev.authservice.repo.AuthUserRepository;
-import org.nessrev.authservice.service.AuthService;
+import org.nessrev.authservice.auth.repo.AuthUserRepository;
+import org.nessrev.authservice.outbox.entity.OutboxEvent;
+import org.nessrev.authservice.outbox.repo.OutboxRepository;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
+
+import java.time.LocalDateTime;
 
 @Service
 @AllArgsConstructor
@@ -26,10 +33,12 @@ public class AuthServiceImpl implements AuthService {
   private final PasswordEncoder passwordEncoder;
   private final JwtService jwtService;
   private final RefreshTokenService refreshTokenService;
-  private final UserServiceClient userServiceClient;
+  private final OutboxRepository outboxRepository;
+  private final ObjectMapper objectMapper;
 
   @Override
-  public AuthResponse register(RegisterRequest registerRequest) {
+  @Transactional
+  public AuthResponse register(RegisterRequest registerRequest) throws JsonProcessingException {
     AuthUser authUser = new AuthUser();
     authUser.setUsername(registerRequest.username());
     String passwordHash = passwordEncoder.encode(registerRequest.password());
@@ -41,13 +50,19 @@ public class AuthServiceImpl implements AuthService {
     }
     AuthUser savedUser = authUserRepository.save(authUser);
 
-    userServiceClient.createUser(
-      new CreateUserRequest(
-        savedUser.getId(),
-        savedUser.getUsername(),
-        savedUser.getRole()
-      )
+    UserCreatedEvent event = new UserCreatedEvent(
+      authUser.getId(),
+      authUser.getUsername(),
+      authUser.getRole()
     );
+
+    outboxRepository.save(OutboxEvent.build()
+      .createdAt(LocalDateTime.now())
+      .eventType(OutboxEventType.USER_CREATED)
+      .payload(objectMapper.writeValueAsString(event))
+      .processed(false)
+      .build()
+      );
 
     String accessToken = jwtService.generateAccessToken(savedUser);
     String refreshToken = jwtService.generateRefreshToken(savedUser);

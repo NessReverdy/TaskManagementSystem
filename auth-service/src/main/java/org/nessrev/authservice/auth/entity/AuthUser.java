@@ -1,10 +1,8 @@
-package org.nessrev.authservice.entity;
+package org.nessrev.authservice.auth.entity;
 
-import jakarta.persistence.Column;
-import jakarta.persistence.Entity;
-import jakarta.persistence.Id;
-import jakarta.persistence.Table;
+import jakarta.persistence.*;
 import jakarta.validation.constraints.NotBlank;
+import jakarta.validation.constraints.NotNull;
 import lombok.Getter;
 import lombok.Setter;
 import org.nessrev.authservice.enums.Role;
@@ -15,6 +13,7 @@ import org.nessrev.authservice.enums.Role;
 @Table(name = "auth_users")
 public class AuthUser {
   @Id
+  @GeneratedValue(strategy = GenerationType.IDENTITY)
   private Long id;
 
   @NotBlank
@@ -25,7 +24,8 @@ public class AuthUser {
   @Column(nullable = false)
   private String passwordHash;
 
-  @NotBlank
+  @NotNull
   @Column(nullable = false)
+  @Enumerated(EnumType.STRING)
   private Role role;
 }
